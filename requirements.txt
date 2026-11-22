@@ -6,3 +6,6 @@ fastapi
 uvicorn[standard]
 joblib
 pytest
+httpx
+pytest-cov
+ruff

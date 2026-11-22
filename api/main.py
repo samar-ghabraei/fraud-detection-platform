@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+#from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import joblib
 import pandas as pd
 
@@ -49,9 +50,20 @@ class Transaction(BaseModel):
     V26: float
     V27: float
     V28: float
-    Amount: float
+    #Amount: float
+    Time: float = Field(ge=0)
+    Amount: float = Field(ge=0)
 
-
+# Output schema
+class PredictionResponse(BaseModel):
+    #prediction: int
+    prediction: int = Field(ge=0, le=1)
+    result: str
+    #fraud_probability: float
+    fraud_probability: float = Field(ge=0, le=1)
+    threshold: float
+    
+    
 @app.get("/")
 def home():
     return {"message": "Fraud Detection API is running"}
@@ -62,7 +74,8 @@ def health():
     return {"status": "healthy"}
 
 
-@app.post("/predict")
+#@app.post("/predict")
+@app.post("/predict", response_model=PredictionResponse)
 def predict(transaction: Transaction):
 
     data = pd.DataFrame(
